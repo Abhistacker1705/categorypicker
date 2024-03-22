@@ -38,7 +38,9 @@ const VerifyEmail: React.FC = () => {
     try {
       const pasteData = await navigator.clipboard.readText();
 
-      const pasteArray: string[] = pasteData.split("");
+      const pasteArray: string[] = pasteData
+        .split("")
+        .filter((char) => !isNaN(parseInt(char)));
       const paddedPasteArray: string[] = Array.from(
         { length: arrayValue.length },
         (_, i) => pasteArray[i] ?? "",
@@ -102,7 +104,11 @@ const VerifyEmail: React.FC = () => {
     e: FormEvent<HTMLFormElement>,
   ): void => {
     e.preventDefault();
-    console.log(arrayValue.toString().replaceAll(",", ""));
+    if (arrayValue.toString().replaceAll(",", "").length !== 8) {
+      toast.warning("Please enter a valid code");
+      return;
+    }
+    setArrayValue(Array.from({ length: arrayValue.length }, (_) => ""));
   };
 
   return (
@@ -111,25 +117,27 @@ const VerifyEmail: React.FC = () => {
       className="form-border-pad-layout items-center"
     >
       <Header />
-      <label>Code:</label>
-      <div className="flex gap-2 self-center">
-        {arrayValue.map((value, index) => (
-          <input
-            key={`index-${index}`}
-            ref={(el) => el && (inputRefs.current[index] = el)}
-            inputMode="numeric"
-            maxLength={1}
-            name="passcode"
-            type="text"
-            value={String(value)}
-            onChange={(e) => onChange(e, index)}
-            onKeyUp={(e) => onKeyUp(e, index)}
-            onKeyDown={(e) => onKeyDown(e)}
-            className="h-12 w-12 rounded-md border text-center placeholder:text-opacity-45 focus:border focus:border-black focus:outline-none"
-            autoComplete="off"
-            accessKey={String(index)}
-          />
-        ))}
+      <div className="flex flex-col gap-2">
+        <label>Code:</label>
+        <div className="flex gap-2 self-center">
+          {arrayValue.map((value, index) => (
+            <input
+              key={`index-${index}`}
+              ref={(el) => el && (inputRefs.current[index] = el)}
+              inputMode="numeric"
+              maxLength={1}
+              name="passcode"
+              type="text"
+              value={String(value)}
+              onChange={(e) => onChange(e, index)}
+              onKeyUp={(e) => onKeyUp(e, index)}
+              onKeyDown={(e) => onKeyDown(e)}
+              className="h-12 w-12 rounded-md border text-center placeholder:text-opacity-45 focus:border focus:border-black focus:outline-none"
+              autoComplete="off"
+              accessKey={String(index)}
+            />
+          ))}
+        </div>
       </div>
       <Button />
     </form>
