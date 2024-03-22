@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .flexy-col {
+    @apply flex flex-col;
+  }
+  .flexy-col-gap-2 {
+    @apply flexy-col gap-2;
+  }
+  /* form style */
+  .form-otp {
+    @apply rounded-formRadius mb-8 mt-10 border px-[60px] py-11;
+  }
+
+  .form-border-pad-layout {
+    @apply flexy-col form-otp gap-8;
+  }
+
+  /* form input  */
+  .input-border-rad-pad-2 {
+    @apply rounded-md border p-2 focus:shadow-md focus:outline-none;
+  }
+}
