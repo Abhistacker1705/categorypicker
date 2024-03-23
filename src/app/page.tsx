@@ -1,9 +1,14 @@
-// import { useRouter } from "next/navigation";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function HomePage() {
-  // const router = useRouter();
+  const router = useRouter();
 
-  // router.push("/signup");
+  useEffect(() => {
+    router.push("/signup");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
