@@ -31,7 +31,7 @@ const SignUpForm: React.FC = () => {
     e.preventDefault();
     toast.success("Account created successfully");
     setFormData({ name: "", email: "", password: "" });
-    router.push("?verify");
+    router.push("/verify");
     console.log(formData);
   };
 

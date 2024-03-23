@@ -23,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning={true}
         className={`font-sans ${inter.variable} flex min-h-screen flex-col items-center justify-start bg-white text-black`}
       >
         <Navbar />

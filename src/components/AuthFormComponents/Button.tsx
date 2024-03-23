@@ -1,31 +1,40 @@
-import React from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+"use client";
+import React, { Suspense } from "react";
+import { NavigationParams } from "~/utils/navigation";
 
 const Button: React.FC = () => {
-  const windowLocation = usePathname()?.split("/")[1];
-  const searchParams = useSearchParams();
+  const { windowLocation, searchParams } = NavigationParams();
 
-  const gettext = (): "CREATE ACCOUNT" | "LOG IN" | "VERIFY" => {
+  const gettext = (): "CREATE ACCOUNT" | "LOG IN" | "VERIFY" | "LOADING" => {
+    if (searchParams == null || windowLocation.length < 1) {
+      return "LOADING";
+    }
     if (
-      windowLocation == "signup" &&
+      windowLocation[1] == "signup" &&
       searchParams.keys().next().value == "verify"
     ) {
       return "VERIFY";
-    } else if (windowLocation == "signup") {
+    } else if (windowLocation[1] == "signup") {
       return "CREATE ACCOUNT";
-    } else if (windowLocation == "signin") {
+    } else if (windowLocation[1] == "signin") {
       return "LOG IN";
     }
     return "LOG IN";
   };
 
   return (
-    <button
-      className="mt-8 w-[434px] bg-black px-36 py-4 text-white"
-      type="submit"
-    >
-      {windowLocation && gettext()}
-    </button>
+    <Suspense>
+      <button
+        className="mt-8 w-[434px] bg-black px-36 py-4 text-white"
+        type="submit"
+      >
+        {searchParams !== null && windowLocation[1] !== null ? (
+          gettext()
+        ) : (
+          <span className="loader"></span>
+        )}
+      </button>
+    </Suspense>
   );
 };
 

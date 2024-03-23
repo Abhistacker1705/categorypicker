@@ -1,12 +1,12 @@
 import React, { Suspense } from "react";
-import SignUpForm from "~/components/SignUpForm";
+import VerifyEmail from "~/components/VerifyEmail";
 
-const SignUp: React.FC = () => {
+const Verify: React.FC = () => {
   return (
     <Suspense fallback={<span className="loader"></span>}>
-      <SignUpForm />
+      <VerifyEmail />
     </Suspense>
   );
 };
 
-export default SignUp;
+export default Verify;
