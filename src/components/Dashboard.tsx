@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { trpc } from "~/app/_trpc/client";
 import Pagination from "./Pagination";
 import useAuth from "~/hooks/useAuth";
@@ -20,19 +20,18 @@ const Dashboard: React.FC = () => {
     page: pageNumber,
   });
 
-  const { isLoading: userLoading, isFetching: userFetching } =
-    trpc.getUserCategories.useQuery(
-      {
-        email: user ? user : "",
+  trpc.getUserCategories.useQuery(
+    {
+      email: user ? user : "",
+    },
+    {
+      enabled: !!user,
+      onSuccess: (data) => {
+        const categoryIds = data.map((category) => category.id);
+        setSelectedCategories(categoryIds);
       },
-      {
-        enabled: !!user,
-        onSuccess: (data) => {
-          const categoryIds = data.map((category) => category.id);
-          setSelectedCategories(categoryIds);
-        },
-      },
-    );
+    },
+  );
 
   const loading = isLoading || isFetching;
 

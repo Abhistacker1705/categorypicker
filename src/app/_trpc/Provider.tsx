@@ -6,6 +6,9 @@ import React, { useState } from "react";
 import { trpc } from "./client";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
+  const url = process.env.HOST
+    ? `${process.env.HOST}/api/trpc`
+    : "https://categorypicker.vercel.app/api/trpc";
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -20,7 +23,7 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/api/trpc",
+          url,
         }),
       ],
     }),
