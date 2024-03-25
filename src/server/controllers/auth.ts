@@ -10,11 +10,19 @@ type User = {
   id: number;
   email: string;
   name: string;
-  password: string;
   verified: boolean;
 };
 
-export const signupFn = async ({ email, password, name }: SignUpParams) => {
+export const signupFn = async ({
+  email,
+  password,
+  name,
+}: SignUpParams): Promise<{
+  id: number;
+  email: string;
+  verified: boolean;
+  otp: string;
+}> => {
   function generateOTP(length: number) {
     const digits = "0123456789";
     let OTP = "";
@@ -27,18 +35,22 @@ export const signupFn = async ({ email, password, name }: SignUpParams) => {
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
-  if (existingUser && !existingUser.verified) {
-    await prisma.user.delete({
-      where: { email },
-    });
-  }
-  if (existingUser?.verified) {
-    throw new Error("User with this email already exists and is verified");
+
+  if (existingUser) {
+    if (existingUser.verified) {
+      throw new Error("User with this email already exists and is verified");
+    } else {
+      const otp = generateOTP(8);
+      return {
+        id: existingUser.id,
+        email: existingUser.email,
+        verified: existingUser.verified,
+        otp,
+      };
+    }
   }
 
-  const otp = generateOTP(8); //Not safe but used now for this project
-
-  const newUser: User = await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       name,
       email,
@@ -46,6 +58,7 @@ export const signupFn = async ({ email, password, name }: SignUpParams) => {
     },
   });
 
+  const otp = generateOTP(8);
   return {
     id: newUser.id,
     email: newUser.email,
@@ -54,21 +67,31 @@ export const signupFn = async ({ email, password, name }: SignUpParams) => {
   };
 };
 
-//verifyStatus
-export const changeVerifyStatus = async ({ email }: { email: string }) => {
+export const changeVerifyStatus = async ({
+  email,
+}: {
+  email: string;
+}): Promise<string> => {
   const user = await prisma.user.findUnique({
     where: { email },
   });
-  if (user) {
-    await prisma.user.update({
-      where: { email },
-      data: { verified: true },
-    });
+
+  if (!user) {
+    throw new Error("User not found");
   }
+
+  if (user.verified) {
+    return "User is already verified";
+  }
+
+  await prisma.user.update({
+    where: { email },
+    data: { verified: true },
+  });
+
   return "User verified successfully";
 };
 
-//sign in
 export const signinFn = async ({
   email,
   password,
