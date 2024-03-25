@@ -85,8 +85,7 @@ const ListElement = ({
   userId: number;
   setUserCategories: React.Dispatch<React.SetStateAction<Array<number>>>;
 }) => {
-  const { mutate: updateCategories, isLoading } =
-    trpc.updateUserCategories.useMutation();
+  const { mutate: updateCategories } = trpc.updateUserCategories.useMutation();
 
   return (
     <div className="flex gap-3">

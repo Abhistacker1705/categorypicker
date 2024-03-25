@@ -1,11 +1,14 @@
 import React, { Suspense } from "react";
 import SignUpForm from "~/components/SignUpForm";
+import ProtectedRoute from "~/utils/auth";
 
 const SignUp: React.FC = () => {
   return (
-    <Suspense fallback={<span className="loader"></span>}>
-      <SignUpForm />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense fallback={<span className="loader"></span>}>
+        <SignUpForm />
+      </Suspense>
+    </ProtectedRoute>
   );
 };
 
