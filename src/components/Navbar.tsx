@@ -4,12 +4,9 @@ import Link from "next/link";
 import type { MenuProps, LoggedInUserFnProps } from "../interfaces/NavbarProps";
 import { CiSearch } from "react-icons/ci";
 import { CiShoppingCart } from "react-icons/ci";
-import useAuth from "~/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 const Navbar: React.FC = () => {
-  const { verified } = useAuth();
-
   const menu: string[] = [
     "Categories",
     "Sale",
@@ -28,9 +25,8 @@ const Navbar: React.FC = () => {
         ECOMMERCE
       </Link>
       <Menu menu={menu} />
-      {verified && (
-        <LoggedInFunctions loggedInUserFunctions={loggedInUserFns} />
-      )}
+
+      <LoggedInFunctions loggedInUserFunctions={loggedInUserFns} />
     </nav>
   );
 };
