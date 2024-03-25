@@ -26,6 +26,7 @@ const SignInForm: React.FC = () => {
     signIn(formData, {
       onSuccess: (data) => {
         toast.success(`Signed In successfully`);
+        window.localStorage.setItem("id", JSON.stringify(data.id));
         window.localStorage.setItem("user", JSON.stringify(data.email));
         window.localStorage.setItem("verified", JSON.stringify(true));
         setFormData({ email: "", password: "" });

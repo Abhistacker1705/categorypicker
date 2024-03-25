@@ -6,13 +6,6 @@ type SignUpParams = {
   name: string;
 };
 
-type User = {
-  id: number;
-  email: string;
-  name: string;
-  verified: boolean;
-};
-
 export const signupFn = async ({
   email,
   password,
@@ -98,7 +91,7 @@ export const signinFn = async ({
 }: {
   email: string;
   password: string;
-}): Promise<{ email: string; name: string }> => {
+}): Promise<{ email: string; name: string; id: number }> => {
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
@@ -118,5 +111,6 @@ export const signinFn = async ({
   return {
     email: existingUser.email,
     name: existingUser.name,
+    id: existingUser.id,
   };
 };

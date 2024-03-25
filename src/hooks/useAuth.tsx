@@ -5,6 +5,7 @@ const useAuth = () => {
   const [userotp, setUserotp] = useState<string | null | undefined>("");
   const [verified, setVerified] = useState<boolean>(false);
   const [userid, setUserId] = useState<number>();
+
   useLayoutEffect(() => {
     const email = window.localStorage.getItem("user");
     const strverified = window.localStorage.getItem("verified");

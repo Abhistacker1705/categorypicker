@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
 import type React from "react";
-import useAuth from "~/hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,9 +10,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }: ProtectedRouteProps) => {
   const router = useRouter();
 
-  const { verified } = useAuth();
+  const email = window.localStorage.getItem("user");
+  const strverified = window.localStorage.getItem("verified");
 
-  if (!verified) {
+  if (!email && !strverified) {
     router.push("/signin");
     return null;
   } else return children;
