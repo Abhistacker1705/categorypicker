@@ -1,18 +1,15 @@
 "use client";
-import React, { Suspense } from "react";
+import React from "react";
 import { NavigationParams } from "~/utils/navigation";
 
-const Button: React.FC = () => {
-  const { windowLocation, searchParams } = NavigationParams();
+const Button: React.FC<{ isLoading?: boolean }> = ({ isLoading }) => {
+  const { windowLocation } = NavigationParams();
 
-  const gettext = (): "CREATE ACCOUNT" | "LOG IN" | "VERIFY" | "LOADING" => {
-    if (searchParams == null || windowLocation.length < 1) {
-      return "LOADING";
+  const gettext = (): "CREATE ACCOUNT" | "LOG IN" | "VERIFY" | "LOADING..." => {
+    if (!windowLocation) {
+      return "LOADING...";
     }
-    if (
-      windowLocation[1] == "signup" &&
-      searchParams.keys().next().value == "verify"
-    ) {
+    if (windowLocation[2] == "verify") {
       return "VERIFY";
     } else if (windowLocation[1] == "signup") {
       return "CREATE ACCOUNT";
@@ -23,18 +20,12 @@ const Button: React.FC = () => {
   };
 
   return (
-    <Suspense>
-      <button
-        className="mt-8 w-[434px] bg-black px-36 py-4 text-white"
-        type="submit"
-      >
-        {searchParams !== null && windowLocation[1] !== null ? (
-          gettext()
-        ) : (
-          <span className="loader"></span>
-        )}
-      </button>
-    </Suspense>
+    <button
+      className="mt-8 w-[434px] bg-black px-36 py-4 text-white"
+      type="submit"
+    >
+      {!isLoading ? gettext() : <span className="loader"></span>}
+    </button>
   );
 };
 

@@ -11,6 +11,7 @@ export default {
       colors: {
         bannerBg: "#F4F4F4",
         breaker: "#C1C1C1",
+        checkboxUnselect: "#CCCCCC",
       },
       borderRadius: {
         formRadius: "20px",

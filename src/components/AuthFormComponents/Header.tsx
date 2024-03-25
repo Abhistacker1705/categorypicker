@@ -1,25 +1,26 @@
 import React, { Suspense } from "react";
 import { NavigationParams } from "~/utils/navigation";
+import useAuth from "~/hooks/useAuth";
 
 const HeaderComp = () => {
-  const { windowLocation, searchParams } = NavigationParams();
+  const { windowLocation } = NavigationParams();
+  const { user } = useAuth();
 
-  if (!windowLocation || !searchParams) <Loading />;
+  if (!windowLocation) <Loading />;
   else {
-    if (
-      windowLocation[1] == "signup" &&
-      searchParams.keys().next().value == "verify"
-    )
+    if (windowLocation[2] == "verify")
       return (
         <>
           <div className="flexy-col gap-3">
             <h2 className="self-center text-2xl font-medium">
               Verify your email address
             </h2>
-            <p className="self-center">
-              Enter the 8 digit code you have received on{" "}
-              <span className="font-medium">anu***@gmail.com</span>
-            </p>
+            {user && (
+              <p className="self-center">
+                Enter the 8 digit code you have received on{" "}
+                <span className="font-medium">{user}</span>
+              </p>
+            )}
           </div>
         </>
       );
@@ -27,7 +28,7 @@ const HeaderComp = () => {
     if (windowLocation[1] == "signup")
       return (
         <>
-          <h2 className="text-3.25xl self-center font-semibold">
+          <h2 className="self-center text-3.25xl font-semibold">
             Create your Account
           </h2>
         </>
@@ -36,7 +37,7 @@ const HeaderComp = () => {
     if (windowLocation[1] == "signin")
       return (
         <>
-          <h2 className="text-3.25xl self-center font-semibold">Login</h2>
+          <h2 className="self-center text-3.25xl font-semibold">Login</h2>
           <div className="flexy-col gap-3">
             <h2 className="self-center text-2xl font-medium">
               Welcome back to ECOMMERCE
@@ -50,7 +51,7 @@ const HeaderComp = () => {
 
 const Header: React.FC = () => {
   return (
-    <Suspense fallback={<span className="loader"></span>}>
+    <Suspense fallback={<Loading />}>
       <HeaderComp />
     </Suspense>
   );
@@ -58,7 +59,7 @@ const Header: React.FC = () => {
 
 export default Header;
 
-const Loading = () => (
+const Loading: React.FC = () => (
   <>
     <div className="flexy-col gap-4">
       <div className="h-12 w-[50%] animate-pulse self-center rounded-lg bg-slate-200 text-2xl font-medium" />

@@ -8,16 +8,19 @@ import type { SignInFormFieldsTypes } from "~/interfaces/SignInFormProps";
 import Button from "./AuthFormComponents/Button";
 import Header from "./AuthFormComponents/Header";
 import { useRouter } from "next/navigation";
+import { trpc } from "~/app/_trpc/client";
 
 const SignUpForm: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
+    name: "",
   });
 
-  const { name, email, password } = formData;
+  const { email, password, name } = formData;
+
+  const { mutate: signUp, isLoading } = trpc.signup.useMutation();
   const signinformData: SignInFormFieldsTypes = {
     email: email,
     password: password,
@@ -29,10 +32,31 @@ const SignUpForm: React.FC = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.success("Account created successfully");
-    setFormData({ name: "", email: "", password: "" });
-    router.push("/signup/verify");
-    console.log(formData);
+
+    signUp(formData, {
+      onSuccess: (data) => {
+        toast.success(`Account created successfully`);
+        window.localStorage.setItem("id", JSON.stringify(data.id));
+        window.localStorage.setItem("user", JSON.stringify(data.email));
+        window.localStorage.setItem("verified", JSON.stringify(data.verified));
+        window.sessionStorage.setItem("userotp", JSON.stringify(data.otp));
+        setFormData({ name: "", email: "", password: "" });
+        router.push("/signup/verify");
+        setTimeout(() => {
+          toast.dismiss();
+          toast.info(
+            `Your OTP is ${data.otp}.Click and hold OTP then Click CTRL+C to Copy it,then paste it`,
+            {
+              duration: Infinity,
+              closeButton: true,
+            },
+          );
+        }, 2000);
+      },
+      onError: (error) => {
+        toast.error(`Error creating account - ${error.message}`);
+      },
+    });
   };
 
   return (
@@ -55,7 +79,7 @@ const SignUpForm: React.FC = () => {
         signinFormData={signinformData}
         handleChange={handleChange}
       />
-      <Button />
+      <Button isLoading={isLoading} />
       <p className="flex gap-3 self-center">
         <span>Have an Account?</span>
         <Link className="font-medium hover:underline" href="/signin">

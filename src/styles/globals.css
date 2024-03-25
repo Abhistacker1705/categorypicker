@@ -41,4 +41,39 @@
       transform: rotate(360deg);
     }
   }
+
+  input[type="checkbox"]:checked {
+    background: black;
+    color: white;
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    background: #cccccc;
+    height: 24px;
+    width: 24px;
+    border-radius: 4px;
+    color: white;
+  }
+
+  input[type="checkbox"]:after {
+    content: " ";
+    position: relative;
+    left: 30%;
+    top: 12%;
+    width: 30%;
+    height: 60%;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(50deg);
+    display: none;
+  }
+
+  input[type="checkbox"]:checked:after {
+    display: block;
+  }
 }

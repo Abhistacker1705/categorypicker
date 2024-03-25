@@ -9,8 +9,12 @@ import type {
 import Button from "./AuthFormComponents/Button";
 import Header from "./AuthFormComponents/Header";
 import { toast } from "sonner";
+import { trpc } from "~/app/_trpc/client";
+import { useRouter } from "next/navigation";
+import useAuth from "../hooks/useAuth";
 
 const VerifyEmail: React.FC = () => {
+  const router = useRouter();
   const [arrayValue, setArrayValue] = useState<string[]>([
     "",
     "",
@@ -22,6 +26,15 @@ const VerifyEmail: React.FC = () => {
     "",
   ] as string[]);
   const inputRefs = useRef<HTMLInputElement[]>([]);
+
+  const {
+    user,
+    userotp,
+  }: { user: string | null | undefined; userotp: string | null | undefined } =
+    useAuth();
+
+  //mutation function
+  const { mutate: verifyEmail, isLoading } = trpc.verify.useMutation();
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -109,6 +122,30 @@ const VerifyEmail: React.FC = () => {
       toast.warning("Please enter a valid code");
       return;
     }
+    toast.dismiss();
+    const otpString = arrayValue.join().replaceAll(",", "").toString();
+    const storedOtp = userotp;
+
+    if (storedOtp === otpString) {
+      if (!user) {
+        toast.error("Invalid user");
+        return;
+      }
+      verifyEmail(
+        { email: user },
+        {
+          onSuccess: () => {
+            window.localStorage.setItem("verified", "true");
+            toast.success("Verified your profile");
+            router.push("/dashboard");
+          },
+
+          onError: (error) => {
+            toast.error(`Error verifying OTP - ${error.message}`);
+          },
+        },
+      );
+    } else toast.error("Invalid OTP");
     setArrayValue(Array.from({ length: arrayValue.length }, (_) => ""));
   };
 
@@ -140,7 +177,7 @@ const VerifyEmail: React.FC = () => {
           ))}
         </div>
       </div>
-      <Button />
+      <Button isLoading={isLoading} />
     </form>
   );
 };
