@@ -37,7 +37,7 @@ export const updateUserSelectedCategories = async ({
       where: { id: userId },
       data: {
         selectedcategories: {
-          connect: selectedCategoryIds.map((categoryId) => ({
+          set: selectedCategoryIds.map((categoryId) => ({
             id: categoryId,
           })),
         },

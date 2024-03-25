@@ -94,11 +94,15 @@ const ListElement = ({
         className="cursor-pointer checked:bg-black checked:text-white"
         id={category.name}
         onChange={async () => {
-          setUserCategories((prev: Array<number>) => [...prev, category.id]);
+          setUserCategories((prev: Array<number>) => {
+            if (prev.includes(category.id)) {
+              return prev.filter((id) => id !== category.id);
+            } else return [...prev, category.id];
+          });
           updateCategories(
             {
               userId,
-              selectedCategoryIds: category.id,
+              selectedCategoryIds: userCategories,
             },
             {
               onSuccess: () => {
