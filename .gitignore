@@ -41,6 +41,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-#Provider TRPC
-*.Provider.tsx
+# Provider TRPC
 src/app/_trpc/Provider.tsx

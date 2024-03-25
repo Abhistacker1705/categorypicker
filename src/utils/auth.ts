@@ -11,14 +11,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }: ProtectedRouteProps) => {
   const router = useRouter();
 
-  const { user, verified } = useAuth();
+  const { verified } = useAuth();
 
-  if (!user && verified) {
+  if (!verified) {
     router.push("/signin");
     return null;
-  }
-
-  return children;
+  } else return children;
 };
 
 export default ProtectedRoute;
