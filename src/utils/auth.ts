@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import type React from "react";
+import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,13 +10,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }: ProtectedRouteProps) => {
   const router = useRouter();
 
-  const email = window.localStorage.getItem("user");
-  const strverified = window.localStorage.getItem("verified");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const email = window.localStorage.getItem("user");
+      const strverified = window.localStorage.getItem("verified");
 
-  if (!email && !strverified) {
-    router.push("/signin");
-    return null;
-  } else return children;
+      if (!email || !strverified) {
+        router.push("/signin");
+      }
+    }
+  }, []);
+
+  return children;
 };
 
 export default ProtectedRoute;
